@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>投标文件智能编制助手</title>
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+  <div class="page-glow glow-one"></div>
+  <div class="page-glow glow-two"></div>
+  <main class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="返回顶部">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M5 3.5h10l4 4V20.5H5z"/><path d="M15 3.5v4h4M8.5 12h7M8.5 15.5h5"/></svg>
+        </span>
+        <span><strong>标书智传</strong><small>投标文件智能编制助手</small></span>
+      </a>
+      <div id="connection" class="connection-pill"><i class="status-gem"></i><span>未连接编制工具</span></div>
+    </header>
+
+    <section class="hero" id="top">
+      <div class="hero-main">
+        <div class="hero-kicker"><span>本机运行</span><span>逐章核验</span><span>安全可中断</span></div>
+        <h1>把复杂的标书上传，变成一条清楚的流水线</h1>
+        <p>读取编制工具真实章节，自动匹配成品文件。每一章都经过上传、下一章和状态回读三重确认。</p>
+        <div class="metrics" aria-label="项目进度概览">
+          <div class="metric"><span id="chapterMetric">0</span><small>实际章节</small></div>
+          <div class="metric success"><span id="completedMetric">0</span><small>已完成</small></div>
+          <div class="metric"><span id="pendingMetric">0</span><small>待处理</small></div>
+          <div class="metric"><span id="pilotMetric">未验证</span><small>单文件门禁</small></div>
+        </div>
+      </div>
+      <aside class="safety-card">
+        <span class="safety-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-2.8 8-7 10-4.2-2-7-5.5-7-10V6z"/><path d="M8.5 12l2.2 2.2 4.8-5"/></svg>
+        </span>
+        <div><strong>原始标书不会被修改</strong><p>转换副本只进入本项目 output，日志和逐章报告只进入 logs。</p></div>
+      </aside>
+    </section>
+
+    <div class="workspace">
+      <aside class="flow-nav">
+        <div class="flow-title">处理流程</div>
+        <nav>
+          <a href="#step1"><span>01</span><div><strong>连接项目</strong><small>读取真实章节树</small></div></a>
+          <a href="#step2"><span>02</span><div><strong>企业资料</strong><small>识别并回写核验</small></div></a>
+          <a href="#step3"><span>03</span><div><strong>项目成员</strong><small>合并身份证与证书</small></div></a>
+          <a href="#step4"><span>04</span><div><strong>工程量清单</strong><small>一次导入，软件生成</small></div></a>
+          <a href="#step5"><span>05</span><div><strong>逐章处理</strong><small>可试跑、重试、跳过</small></div></a>
+        </nav>
+        <div class="runtime-card">
+          <span>当前状态</span>
+          <p id="status">尚未连接编制工具。</p>
+          <button id="refresh" class="text-button">刷新状态</button>
+        </div>
+      </aside>
+
+      <div class="content-column">
+        <section class="panel" id="step1">
+          <div class="panel-head">
+            <div class="step-badge">01</div>
+            <div><p class="section-kicker">PROJECT SETUP</p><h2>选择项目与编制工具</h2><p>选择项目、单位和招标文件后，再读取软件中的真实章节。</p></div>
+          </div>
+          <div class="form-grid">
+            <label class="field span-2"><span>项目文件夹</span><div class="input-row"><input id="projectDir" placeholder="请选择包含投标文件的项目文件夹"><button data-choose="project" class="browse-button">浏览</button></div></label>
+            <label class="field"><span>投标单位</span><select id="bidder"><option value="">先选择项目文件夹</option></select></label>
+            <label class="field"><span>.zjzbs 招标文件</span><div class="input-row"><input id="zjzbsPath" placeholder="请选择招标文件"><button data-choose="zjzbs" class="browse-button">浏览</button></div></label>
+            <label class="field"><span>CEF 调试地址</span><input id="endpoint" value="http://127.0.0.1:9222"></label>
+            <label class="field span-2"><span>编制工具路径</span><div class="input-row"><input id="exePath" value="C:\Program Files\投标文件编制工具\tenderBidApp.exe"><button id="launchTool" class="secondary">启动软件</button></div></label>
+          </div>
+          <div class="panel-actions"><button id="readChapters" class="primary large"><span>连接软件并读取真实章节</span><b aria-hidden="true">→</b></button><span class="action-help">此操作只读取，不会上传附件</span></div>
+        </section>
+
+        <section class="panel" id="step2">
+          <div class="panel-head compact"><div class="step-badge">02</div><div><p class="section-kicker">BIDDER PROFILE</p><h2>投标人基本资料</h2><p>从成品表识别企业、法人、联系人和委托代理人，确认后再写入。</p></div><span id="bidderStatus" class="inline-status">尚未识别</span></div>
+          <div class="panel-actions topless"><button id="bidderExtract" class="primary">自动识别成品表</button><button id="bidderWrite" class="secondary">确认写入并核验</button></div>
+          <div id="bidderPreview" class="data-grid empty-preview"><span>识别后将在这里逐项展示企业资料</span></div>
+        </section>
+
+        <section class="panel" id="step3">
+          <div class="panel-head compact"><div class="step-badge">03</div><div><p class="section-kicker">PROJECT TEAM</p><h2>项目成员信息</h2><p>自动合并姓名、岗位、身份证与证书编号，写入前可完整预览。</p></div><span id="memberStatus" class="inline-status">尚未加载</span></div>
+          <div class="panel-actions topless"><button id="memberExtract" class="primary">自动识别项目成员</button><button id="memberWrite" class="secondary">确认写入并核验</button><button id="memberLoad">改用 CSV / Excel</button><button id="memberTemplate" class="ghost">导出资料模板</button></div>
+          <div id="memberPreview" class="data-grid empty-preview"><span>识别后将在这里展示成员与证书资料</span></div>
+        </section>
+
+        <section class="panel" id="step4">
+          <div class="panel-head compact"><div class="step-badge">04</div><div><p class="section-kicker">BILL OF QUANTITIES</p><h2>工程量清单</h2><p>只需导入一次，报价封面、清单报价及已标价清单由软件自动生成。</p></div><span id="boqStatus" class="inline-status">尚未导入</span></div>
+          <div class="boq-box"><div class="boq-symbol">¥</div><div><strong>导入清单源文件</strong><p>支持清单专用格式、Excel 与 PDF；导入后会从编制工具重新读取核验。</p></div><button id="boqImport" class="primary">选择清单并导入</button></div>
+        </section>
+
+        <section class="panel chapters-panel" id="step5">
+          <div class="panel-head"><div class="step-badge">05</div><div><p class="section-kicker">CHAPTER WORKSPACE</p><h2>逐章处理工作台</h2><p>附件链接、真实“下一章”和绿色完成状态三项齐全，才算成功。</p></div></div>
+          <div class="chapter-toolbar">
+            <label class="date-field"><span>法定代表人身份证明日期</span><input id="legalDate" type="date"></label>
+            <button id="saveLegalDate" class="secondary">写入日期并核验</button>
+            <div class="toolbar-divider"></div>
+            <button id="verifyOne" class="primary" disabled>验证所选文件</button>
+            <button id="runBatch" class="danger" disabled>开始批量处理</button>
+            <button id="stopBatch" class="stop-button">停止</button>
+          </div>
+          <div class="legend"><span><i class="dot done"></i>已完成</span><span><i class="dot wait"></i>待处理</span><span><i class="dot manual"></i>需人工</span><span class="legend-note">表格可横向滚动</span></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th class="select-col">选择</th><th>软件实际小章节</th><th>处理方式</th><th>匹配文件</th><th>完成状态</th><th>核验证据</th><th>操作</th></tr></thead>
+              <tbody id="chaptersBody"><tr><td colspan="7" class="empty">连接软件后，将在这里显示真实章节树</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <footer class="page-footer"><span>标书智传 · 本机安全运行</span><span>所有结果以编制工具回读状态为准</span></footer>
+  </main>
+  <div id="toast" role="status"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+.env
+
+# 本地运行生成物：不提交转换副本、日志、截图和临时文件
+output/
+logs/
+tmp/
+
+# 本机测试资料：保留在工作区使用，不推送投标原文件
+测试专用/
+
+# 已废弃的早期原型目录（当前入口不再使用）
+src/
+config/
+scripts/

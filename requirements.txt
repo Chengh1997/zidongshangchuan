@@ -1,0 +1,6 @@
+Flask>=3.1
+openpyxl>=3.1
+pdfplumber>=0.11
+psutil>=5.9
+pywin32>=306
+websocket-client>=1.8
