@@ -6,7 +6,7 @@ from bid_upload_assistant.member_extract import extract_project_members
 
 class MemberExtractionTests(unittest.TestCase):
     def test_real_test_project_tables_are_merged(self) -> None:
-        bid_root = Path(__file__).resolve().parents[1] / "测试专用" / "7-29-径山镇潘板集镇有机更新项目" / "投标文件"
+        bid_root = Path(__file__).resolve().parents[2] / "测试资料" / "测试专用" / "7-29-径山镇潘板集镇有机更新项目" / "投标文件"
         if not bid_root.is_dir():
             self.skipTest("本机测试项目不存在")
 

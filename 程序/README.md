@@ -2,29 +2,29 @@
 
 这是一个重新实现的、以“先验证，再批量”为原则的本地工具。
 
-它不会修改所选项目里的 Word、PDF 或其他标书成品。转换后的 PDF 只会写入本目录的 `output`，逐文件日志和报告只会写入 `logs`。
+它不会修改所选项目里的 Word、PDF 或其他标书成品。转换后的 PDF 只会写入 `程序/output`，逐文件日志和报告只会写入 `程序/logs`。
 
 ## 仓库结构
 
-当前可提交的核心代码只有根目录入口、`bid_upload_assistant/`、`templates/`、`static/` 和 `tests/`：
+项目根目录只保留一个启动按钮；源码、网页、测试、说明和运行产物都在本目录：
 
 ```text
-main.py                       启动本地网页服务
-web_app.py                    Flask 页面与接口
-bid_upload_assistant/         软件桥接、章节计划、资料识别、上传核验
-templates/index.html          网页结构
-static/app.css                网页样式
-static/app.js                 网页交互
-tests/                        离线规则测试与需显式运行的真实软件回归脚本
-测试专用/                     本机测试资料，不提交到仓库
-output/ logs/ tmp/            本机运行产物，已加入忽略规则
+程序/main.py                  启动本地网页服务
+程序/web_app.py               Flask 页面与接口
+程序/bid_upload_assistant/    软件桥接、章节计划、资料识别、上传核验
+程序/templates/               网页结构
+程序/static/                  网页样式和交互
+程序/tests/                   离线规则测试与需显式运行的真实软件回归脚本
+程序/output、logs、tmp/       本机运行产物，已加入忽略规则
+测试资料/测试专用/             本机测试资料，不提交到仓库
+程序/旧原型/                  仅保存早期缓存和空目录，当前入口不使用
 ```
 
-旧的 `src/bid_auto_upload` 原型已经不再是运行入口；如果工作区里仍有它的缓存目录，Git 会按 `.gitignore` 忽略，不会进入新仓库。
+旧的 `src/bid_auto_upload` 原型已经不再是运行入口，剩余缓存已收进 `程序/旧原型/`，不会干扰当前程序。
 
 ## 操作顺序
 
-1. 双击 `启动网页版.bat`（或执行 `python main.py`）。浏览器会自动打开本机操作界面。
+1. 双击项目根目录的 `启动网页版.bat`（或在 `程序/` 内执行 `python main.py`）。浏览器会自动打开本机操作界面。
 2. 选择项目文件夹、投标单位和 `.zjzbs`。
 3. 点击“连接编制工具并读取章节”。工具只读取软件当前项目的真实章节树。
 4. 点击“从成品表自动识别”，程序读取投标人基本情况表，预览公司、法人、地址、联系人和委托代理人；确认后调用软件自身接口写入并读回核验，已有身份证附件不会被替换。
@@ -50,6 +50,7 @@ output/ logs/ tmp/            本机运行产物，已加入忽略规则
 ## 安装
 
 ```powershell
+cd 程序
 python -m pip install -r requirements.txt
 python main.py
 ```
@@ -57,6 +58,7 @@ python main.py
 运行回归测试：
 
 ```powershell
+cd 程序
 python -m unittest discover -s tests -p "test_*.py" -v
 ```
 
